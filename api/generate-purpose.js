@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-5.2",
+        model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
         instructions: "你是大學行政與活動文案助理，擅長寫清楚、自然、有吸引力的繁體中文活動文案。",
         input,
         max_output_tokens: 220
@@ -57,8 +57,12 @@ module.exports = async function handler(req, res) {
 
     const data = await response.json();
     if (!response.ok) {
+      const message = data.error?.message || "OpenAI request failed";
+      const friendly = response.status === 429
+        ? `OpenAI 額度或速率限制：${message}`
+        : message;
       return res.status(response.status).json({
-        error: data.error?.message || "OpenAI request failed"
+        error: friendly
       });
     }
 

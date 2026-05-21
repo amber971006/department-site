@@ -710,7 +710,7 @@ export default function EventAssistant() {
     } catch (error) {
       const purpose = buildTemplatePurpose();
       setField("purpose")(purpose);
-      setPurposeError("AI 目前無法使用，已先套用本機模板。部署到 Vercel 並設定 OPENAI_API_KEY 後即可使用 AI。");
+      setPurposeError(`AI 目前無法使用，已先套用本機模板。${error.message || "請確認 Vercel 的 OPENAI_API_KEY 與 OpenAI 帳戶額度。"}`);
     } finally {
       setGeneratingPurpose(false);
     }
