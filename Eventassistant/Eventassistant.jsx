@@ -618,6 +618,7 @@ export default function EventAssistant() {
   const [showPosterSettings, setShowPosterSettings] = useState(false);
   const [generated, setGenerated] = useState(false);
   const [generatingPurpose, setGeneratingPurpose] = useState(false);
+  const [purposeError, setPurposeError] = useState("");
 
   const setField = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
@@ -670,10 +671,7 @@ export default function EventAssistant() {
     if (parsed.endTime) setEndTime(parsed.endTime);
   };
 
-  // 自動產生活動目的
-  const handleAutoGeneratePurpose = () => {
-    if (generatingPurpose) return;
-    setGeneratingPurpose(true);
+  const buildTemplatePurpose = () => {
     const name = form.name || "本活動";
     const speaker = form.speaker || "";
     const speakerTitle = form.speakerTitle || "";
@@ -681,11 +679,41 @@ export default function EventAssistant() {
     const speakerStr = speaker
       ? `，由${speakerTitle ? speakerTitle + " " : ""}${speaker}主講，`
       : "，";
-    const purpose = `本次「${name}」${speakerStr}旨在提升${audience}對相關議題的認識與理解，透過深度分享與交流，促進知識傳遞與實務應用，期望參與者能從中獲得啟發，拓展視野並建立跨領域連結。`;
-    setTimeout(() => {
+    return `本次「${name}」${speakerStr}旨在提升${audience}對相關議題的認識與理解，透過深度分享與交流，促進知識傳遞與實務應用，期望參與者能從中獲得啟發，拓展視野並建立跨領域連結。`;
+  };
+
+  // 自動產生活動目的
+  const handleAutoGeneratePurpose = async () => {
+    if (generatingPurpose) return;
+    setGeneratingPurpose(true);
+    setPurposeError("");
+    try {
+      const response = await fetch("/api/generate-purpose", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          subtitle: form.subtitle,
+          speaker: form.speaker,
+          speakerTitle: form.speakerTitle,
+          audience: form.audience,
+          organizer: form.organizer,
+          highlights: form.highlights,
+          purpose: form.purpose
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.purpose) {
+        throw new Error(data.error || "AI 產生失敗");
+      }
+      setField("purpose")(data.purpose);
+    } catch (error) {
+      const purpose = buildTemplatePurpose();
       setField("purpose")(purpose);
+      setPurposeError("AI 目前無法使用，已先套用本機模板。部署到 Vercel 並設定 OPENAI_API_KEY 後即可使用 AI。");
+    } finally {
       setGeneratingPurpose(false);
-    }, 400);
+    }
   };
 
   const handleGenerate = () => {
@@ -821,7 +849,7 @@ export default function EventAssistant() {
                   disabled={generatingPurpose}
                   className="text-xs px-3 py-1 rounded-md border border-sky-200 text-sky-700 hover:bg-sky-50 disabled:opacity-50 transition-colors flex items-center gap-1"
                 >
-                  {generatingPurpose ? "⏳ 產生中…" : "✦ 自動產生"}
+                  {generatingPurpose ? "AI 產生中…" : "AI 產生"}
                 </button>
               </div>
               <textarea
@@ -829,8 +857,9 @@ export default function EventAssistant() {
                 className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400 bg-slate-50/60 focus:bg-white text-slate-800 placeholder-slate-400 resize-none transition-colors"
                 value={form.purpose}
                 onChange={e => setField("purpose")(e.target.value)}
-                placeholder="說明本次活動的目標與意義…（或點右上「自動產生」）"
+                placeholder="說明本次活動的目標與意義…（或點右上「AI 產生」）"
               />
+              {purposeError && <p className="text-xs text-amber-600">{purposeError}</p>}
             </div>
 
             <InputField label="活動亮點" id="highlights" value={form.highlights} onChange={setField("highlights")} placeholder="例：業界專家分享、互動工作坊、證書頒發…" multiline />

@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  base: "/department-site/",
+  base: process.env.VERCEL ? "/" : "/department-site/",
   plugins: [react()],
   build: {
     outDir: "docs",
