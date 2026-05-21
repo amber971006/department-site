@@ -392,7 +392,15 @@ function InputField({ label, id, value, onChange, placeholder, multiline, requir
 }
 
 // ── 日曆元件 ─────────────────────────────────────────────
-function DatePicker({ label, value, onChange }) {
+function CalendarIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+      <path d="M7 3v3M17 3v3M4 9h16M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function DatePicker({ label, value, onChange, hideLabel = false, placeholder = "選擇日期" }) {
   const [open, setOpen] = useState(false);
   const today = new Date();
   const current = value ? new Date(value + "T00:00:00") : today;
@@ -426,22 +434,22 @@ function DatePicker({ label, value, onChange }) {
 
   return (
     <div className="flex flex-col gap-1 relative">
-      <label className="text-xs font-medium text-slate-500">{label || "活動日期"}</label>
+      {!hideLabel && <label className="text-xs font-medium text-slate-500">{label || "活動日期"}</label>}
       <button type="button" onClick={() => setOpen(o => !o)}
-        className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm bg-slate-50/60 text-left focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400 flex items-center justify-between transition-colors">
-        <span className={displayValue ? "text-slate-800" : "text-slate-400"}>{displayValue || "選擇日期"}</span>
-        <span className="text-slate-400 text-xs">日期</span>
+        className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm bg-white text-left focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 flex items-center justify-between transition-colors hover:border-amber-300">
+        <span className={displayValue ? "text-slate-800" : "text-slate-400"}>{displayValue || placeholder}</span>
+        <span className="text-amber-500"><CalendarIcon /></span>
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1 z-50 bg-white border border-gray-200 rounded-xl shadow-lg p-3 w-72">
+        <div className="absolute top-full left-0 mt-1 z-50 bg-white border border-amber-100 rounded-lg shadow-xl p-3 w-72">
           <div className="flex items-center justify-between mb-3">
-            <button onClick={prevMonth} className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 text-sm">◀</button>
-            <span className="text-sm font-medium text-gray-700">{viewYear} 年 {viewMonth + 1} 月</span>
-            <button onClick={nextMonth} className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 text-sm">▶</button>
+            <button onClick={prevMonth} className="p-1 hover:bg-amber-50 rounded-md text-slate-500 text-sm">◀</button>
+            <span className="text-sm font-semibold text-slate-700">{viewYear} 年 {viewMonth + 1} 月</span>
+            <button onClick={nextMonth} className="p-1 hover:bg-amber-50 rounded-md text-slate-500 text-sm">▶</button>
           </div>
           <div className="grid grid-cols-7 mb-1">
             {["日","一","二","三","四","五","六"].map(w => (
-              <div key={w} className="text-center text-xs text-gray-400 py-1">{w}</div>
+              <div key={w} className="text-center text-xs text-slate-400 py-1">{w}</div>
             ))}
           </div>
           <div className="grid grid-cols-7 gap-0.5">
@@ -449,10 +457,10 @@ function DatePicker({ label, value, onChange }) {
               <div key={i}>
                 {d === null ? <div /> : (
                   <button onClick={() => selectDate(d)}
-                    className={`w-full aspect-square rounded-lg text-xs font-medium transition-colors
-                      ${isSelected(d) ? "bg-blue-600 text-white" :
-                        isToday(d) ? "bg-blue-50 text-blue-600 border border-blue-200" :
-                        "hover:bg-gray-100 text-gray-700"}`}>
+                    className={`w-full aspect-square rounded-md text-xs font-medium transition-colors
+                      ${isSelected(d) ? "bg-amber-500 text-white" :
+                        isToday(d) ? "bg-sky-50 text-sky-700 border border-sky-200" :
+                        "hover:bg-amber-50 text-slate-700"}`}>
                     {d}
                   </button>
                 )}
@@ -461,7 +469,7 @@ function DatePicker({ label, value, onChange }) {
           </div>
           {value && (
             <button onClick={() => { onChange(""); setOpen(false); }}
-              className="mt-2 w-full text-xs text-gray-400 hover:text-gray-600 py-1">清除日期</button>
+              className="mt-2 w-full text-xs text-slate-400 hover:text-slate-600 py-1">清除日期</button>
           )}
         </div>
       )}
@@ -470,7 +478,7 @@ function DatePicker({ label, value, onChange }) {
 }
 
 // ── 時間選擇器 ───────────────────────────────────────────
-function TimePicker({ label, startTime, endTime, onChangeStart, onChangeEnd, showEnd = true }) {
+function TimePicker({ label, startTime, endTime, onChangeStart, onChangeEnd, showEnd = true, compact = false, startLabel = "開始" }) {
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
   const mins = ["00", "10", "20", "30", "40", "50"];
 
@@ -479,13 +487,13 @@ function TimePicker({ label, startTime, endTime, onChangeStart, onChangeEnd, sho
     return (
       <div className="flex gap-1 flex-1">
         <select value={h || ""} onChange={e => onChange(e.target.value && (m || "00") ? `${e.target.value}:${m || "00"}` : "")}
-          className="flex-1 border border-slate-200 rounded-md px-2 py-2 text-sm bg-slate-50/60 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400">
+          className="flex-1 border border-slate-200 rounded-md px-2 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 hover:border-amber-300">
           <option value="">時</option>
           {hours.map(hh => <option key={hh} value={hh}>{hh}</option>)}
         </select>
-        <span className="self-center text-gray-400 text-sm">:</span>
+        <span className="self-center text-slate-400 text-sm">:</span>
         <select value={m || ""} onChange={e => onChange(h && e.target.value ? `${h}:${e.target.value}` : "")}
-          className="flex-1 border border-slate-200 rounded-md px-2 py-2 text-sm bg-slate-50/60 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400">
+          className="flex-1 border border-slate-200 rounded-md px-2 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 hover:border-amber-300">
           <option value="">分</option>
           {mins.map(mm => <option key={mm} value={mm}>{mm}</option>)}
         </select>
@@ -495,22 +503,22 @@ function TimePicker({ label, startTime, endTime, onChangeStart, onChangeEnd, sho
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-slate-500">{label || "活動時間"}</label>
+      {label !== null && <label className="text-xs font-medium text-slate-500">{label || "活動時間"}</label>}
       <div className="flex gap-2 items-center">
         <div className="flex flex-col gap-0.5 flex-1">
-          <span className="text-xs text-gray-400">開始</span>
+          {!compact && <span className="text-xs text-slate-400">{startLabel}</span>}
           <TimeSelect value={startTime} onChange={onChangeStart} />
         </div>
         {showEnd && <>
-          <span className="text-gray-400 text-sm mt-4">–</span>
+          <span className="text-slate-400 text-sm mt-4">–</span>
           <div className="flex flex-col gap-0.5 flex-1">
-            <span className="text-xs text-gray-400">結束（選填）</span>
+            <span className="text-xs text-slate-400">結束（選填）</span>
             <TimeSelect value={endTime} onChange={onChangeEnd} />
           </div>
         </>}
       </div>
       {(startTime || endTime) && (
-        <p className="text-xs text-blue-500 mt-0.5">⏰ {formatTimeRange(startTime, endTime)}</p>
+        <p className="text-xs text-sky-600 mt-0.5">時間：{formatTimeRange(startTime, endTime)}</p>
       )}
     </div>
   );
@@ -569,8 +577,8 @@ function FreeTextParser({ onApply }) {
 
 function Section({ title, children }) {
   return (
-    <section className="bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
-      <h2 className="text-sm font-semibold text-slate-800 mb-4 pb-3 border-b border-slate-100">{title}</h2>
+    <section className="bg-white/95 border border-white rounded-lg p-5 shadow-sm ring-1 ring-slate-100">
+      <h2 className="text-sm font-semibold text-slate-800 mb-4 pb-3 border-b border-amber-100">{title}</h2>
       {children}
     </section>
   );
@@ -710,19 +718,19 @@ export default function EventAssistant() {
   const infoOnly = length === "無";
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-6 sm:px-6">
+    <div className="min-h-screen bg-[linear-gradient(135deg,#f0f9ff_0%,#fff7ed_48%,#f0fdfa_100%)] px-4 py-6 sm:px-6">
       <div className="mx-auto flex max-w-6xl flex-col gap-5">
 
         {/* Header */}
-        <div className="flex flex-col gap-3 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-lg border border-white/70 bg-white/75 px-5 py-4 shadow-sm backdrop-blur sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="mb-2 text-xs font-semibold text-sky-700">Event Assistant</p>
+            <p className="mb-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">Event Assistant</p>
             <h1 className="text-2xl font-bold text-slate-900">活動輔助整理</h1>
             <p className="mt-2 text-sm text-slate-500">輸入活動資訊，一次整理海報、公告、Email、報名頁與 AI 海報生成指令</p>
           </div>
           <div className="flex gap-2 text-xs text-slate-500">
-            <span className="rounded-md border border-slate-200 bg-white px-2.5 py-1">文案產出</span>
-            <span className="rounded-md border border-slate-200 bg-white px-2.5 py-1">海報提示詞</span>
+            <span className="rounded-md border border-sky-100 bg-sky-50 px-2.5 py-1 text-sky-700">文案產出</span>
+            <span className="rounded-md border border-teal-100 bg-teal-50 px-2.5 py-1 text-teal-700">海報提示詞</span>
           </div>
         </div>
 
@@ -776,21 +784,25 @@ export default function EventAssistant() {
             <InputField label="協辦單位" id="coorganizer" value={form.coorganizer} onChange={setField("coorganizer")} placeholder="例：創新育成中心" />
 
             {/* 報名截止：日期 + 時間 */}
-            <div className="flex flex-col gap-1">
+            <div className="sm:col-span-2 flex flex-col gap-1">
               <label className="text-xs font-medium text-slate-500">報名截止</label>
-              <DatePicker label="" value={form.deadlineDate} onChange={setField("deadlineDate")} />
-              {form.deadlineDate && (
-                <div className="mt-1">
-                  <TimePicker
-                    label="截止時間（選填）"
-                    startTime={deadlineStartTime}
-                    endTime=""
-                    onChangeStart={setDeadlineStartTime}
-                    onChangeEnd={() => {}}
-                    showEnd={false}
-                  />
-                </div>
-              )}
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_220px]">
+                <DatePicker
+                  hideLabel
+                  placeholder="選擇截止日期"
+                  value={form.deadlineDate}
+                  onChange={setField("deadlineDate")}
+                />
+                <TimePicker
+                  label={null}
+                  compact
+                  startTime={deadlineStartTime}
+                  endTime=""
+                  onChangeStart={setDeadlineStartTime}
+                  onChangeEnd={() => {}}
+                  showEnd={false}
+                />
+              </div>
               {deadlineDisplay && (
                 <p className="text-xs text-sky-600">截止：{deadlineDisplay}</p>
               )}
