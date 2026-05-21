@@ -619,6 +619,8 @@ export default function EventAssistant() {
   const [generated, setGenerated] = useState(false);
   const [generatingPurpose, setGeneratingPurpose] = useState(false);
   const [purposeError, setPurposeError] = useState("");
+  const [purposePrompt, setPurposePrompt] = useState("");
+  const [purposePromptCopied, setPurposePromptCopied] = useState(false);
 
   const setField = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
@@ -682,38 +684,49 @@ export default function EventAssistant() {
     return `本次「${name}」${speakerStr}旨在提升${audience}對相關議題的認識與理解，透過深度分享與交流，促進知識傳遞與實務應用，期望參與者能從中獲得啟發，拓展視野並建立跨領域連結。`;
   };
 
-  // 自動產生活動目的
-  const handleAutoGeneratePurpose = async () => {
-    if (generatingPurpose) return;
-    setGeneratingPurpose(true);
+  const buildPurposePrompt = () => {
+    return [
+      "請根據以下活動資訊，幫我撰寫一段「活動目的」。",
+      "",
+      "要求：",
+      "1. 使用繁體中文。",
+      "2. 字數約 80 到 140 字。",
+      "3. 語氣自然、正式但不要僵硬。",
+      "4. 適合大學系所活動公告或報名頁。",
+      "5. 不要使用條列。",
+      "6. 不要捏造未提供的資訊。",
+      "7. 只輸出活動目的本文，不要加標題。",
+      "",
+      "活動資訊：",
+      `活動名稱：${form.name || "未提供"}`,
+      form.subtitle ? `副標題：${form.subtitle}` : "",
+      form.speaker ? `講者：${form.speaker}` : "",
+      form.speakerTitle ? `講者職稱／經歷：${form.speakerTitle}` : "",
+      form.audience ? `活動對象：${form.audience}` : "",
+      form.organizer ? `主辦單位：${form.organizer}` : "",
+      form.highlights ? `活動亮點：${form.highlights}` : "",
+      form.purpose ? `目前草稿：${form.purpose}` : ""
+    ].filter(Boolean).join("\n");
+  };
+
+  // 產生活動目的 Prompt
+  const handleGeneratePurposePrompt = () => {
     setPurposeError("");
-    try {
-      const response = await fetch("/api/generate-purpose", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          subtitle: form.subtitle,
-          speaker: form.speaker,
-          speakerTitle: form.speakerTitle,
-          audience: form.audience,
-          organizer: form.organizer,
-          highlights: form.highlights,
-          purpose: form.purpose
-        })
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.purpose) {
-        throw new Error(data.error || "AI 產生失敗");
-      }
-      setField("purpose")(data.purpose);
-    } catch (error) {
-      const purpose = buildTemplatePurpose();
-      setField("purpose")(purpose);
-      setPurposeError(`AI 目前無法使用，已先套用本機模板。${error.message || "請確認 Vercel 的 OPENAI_API_KEY 與 OpenAI 帳戶額度。"}`);
-    } finally {
-      setGeneratingPurpose(false);
-    }
+    setPurposePrompt(buildPurposePrompt());
+    setPurposePromptCopied(false);
+  };
+
+  const handleCopyPurposePrompt = async () => {
+    const prompt = purposePrompt || buildPurposePrompt();
+    setPurposePrompt(prompt);
+    await navigator.clipboard.writeText(prompt);
+    setPurposePromptCopied(true);
+    setTimeout(() => setPurposePromptCopied(false), 2000);
+  };
+
+  const handleUseTemplatePurpose = () => {
+    setField("purpose")(buildTemplatePurpose());
+    setPurposeError("");
   };
 
   const handleGenerate = () => {
@@ -845,11 +858,11 @@ export default function EventAssistant() {
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-slate-500">活動目的</label>
                 <button
-                  onClick={handleAutoGeneratePurpose}
+                  onClick={handleGeneratePurposePrompt}
                   disabled={generatingPurpose}
                   className="text-xs px-3 py-1 rounded-md border border-sky-200 text-sky-700 hover:bg-sky-50 disabled:opacity-50 transition-colors flex items-center gap-1"
                 >
-                  {generatingPurpose ? "AI 產生中…" : "AI 產生"}
+                  產生 Prompt
                 </button>
               </div>
               <textarea
@@ -857,8 +870,30 @@ export default function EventAssistant() {
                 className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400 bg-slate-50/60 focus:bg-white text-slate-800 placeholder-slate-400 resize-none transition-colors"
                 value={form.purpose}
                 onChange={e => setField("purpose")(e.target.value)}
-                placeholder="說明本次活動的目標與意義…（或點右上「AI 產生」）"
+                placeholder="說明本次活動的目標與意義…（或產生 Prompt 後貼到 ChatGPT）"
               />
+              {purposePrompt && (
+                <div className="rounded-md border border-amber-100 bg-amber-50 p-3">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <p className="text-xs font-medium text-amber-800">貼到 ChatGPT 的 Prompt</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleUseTemplatePurpose}
+                        className="rounded-md border border-amber-200 bg-white px-2.5 py-1 text-xs text-amber-700 hover:bg-amber-100"
+                      >
+                        套用模板
+                      </button>
+                      <button
+                        onClick={handleCopyPurposePrompt}
+                        className="rounded-md bg-amber-500 px-2.5 py-1 text-xs text-white hover:bg-amber-600"
+                      >
+                        {purposePromptCopied ? "已複製" : "複製 Prompt"}
+                      </button>
+                    </div>
+                  </div>
+                  <pre className="max-h-44 overflow-y-auto whitespace-pre-wrap rounded bg-white p-3 text-xs leading-relaxed text-slate-700">{purposePrompt}</pre>
+                </div>
+              )}
               {purposeError && <p className="text-xs text-amber-600">{purposeError}</p>}
             </div>
 
