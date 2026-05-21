@@ -377,10 +377,10 @@ function generateAll(form, selectedTypes, tone, length, posterSettings) {
 
 // ── 小元件 ──────────────────────────────────────────────
 function InputField({ label, id, value, onChange, placeholder, multiline, required }) {
-  const cls = "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white text-gray-800 placeholder-gray-400 resize-none";
+  const cls = "w-full border border-slate-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400 bg-slate-50/60 focus:bg-white text-slate-800 placeholder-slate-400 resize-none transition-colors";
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+      <label htmlFor={id} className="text-xs font-medium text-slate-500">
         {label}{required && <span className="text-red-400 ml-1">*</span>}
       </label>
       {multiline
@@ -426,11 +426,11 @@ function DatePicker({ label, value, onChange }) {
 
   return (
     <div className="flex flex-col gap-1 relative">
-      <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label || "活動日期"}</label>
+      <label className="text-xs font-medium text-slate-500">{label || "活動日期"}</label>
       <button type="button" onClick={() => setOpen(o => !o)}
-        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center justify-between">
-        <span className={displayValue ? "text-gray-800" : "text-gray-400"}>{displayValue || "選擇日期"}</span>
-        <span className="text-gray-400 text-xs">📅</span>
+        className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm bg-slate-50/60 text-left focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400 flex items-center justify-between transition-colors">
+        <span className={displayValue ? "text-slate-800" : "text-slate-400"}>{displayValue || "選擇日期"}</span>
+        <span className="text-slate-400 text-xs">日期</span>
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-1 z-50 bg-white border border-gray-200 rounded-xl shadow-lg p-3 w-72">
@@ -479,13 +479,13 @@ function TimePicker({ label, startTime, endTime, onChangeStart, onChangeEnd, sho
     return (
       <div className="flex gap-1 flex-1">
         <select value={h || ""} onChange={e => onChange(e.target.value && (m || "00") ? `${e.target.value}:${m || "00"}` : "")}
-          className="flex-1 border border-gray-200 rounded-lg px-2 py-2 text-sm bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          className="flex-1 border border-slate-200 rounded-md px-2 py-2 text-sm bg-slate-50/60 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400">
           <option value="">時</option>
           {hours.map(hh => <option key={hh} value={hh}>{hh}</option>)}
         </select>
         <span className="self-center text-gray-400 text-sm">:</span>
         <select value={m || ""} onChange={e => onChange(h && e.target.value ? `${h}:${e.target.value}` : "")}
-          className="flex-1 border border-gray-200 rounded-lg px-2 py-2 text-sm bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          className="flex-1 border border-slate-200 rounded-md px-2 py-2 text-sm bg-slate-50/60 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400">
           <option value="">分</option>
           {mins.map(mm => <option key={mm} value={mm}>{mm}</option>)}
         </select>
@@ -495,7 +495,7 @@ function TimePicker({ label, startTime, endTime, onChangeStart, onChangeEnd, sho
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label || "活動時間"}</label>
+      <label className="text-xs font-medium text-slate-500">{label || "活動時間"}</label>
       <div className="flex gap-2 items-center">
         <div className="flex flex-col gap-0.5 flex-1">
           <span className="text-xs text-gray-400">開始</span>
@@ -533,35 +533,35 @@ function FreeTextParser({ onApply }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs text-gray-500 leading-relaxed">
+      <p className="text-xs text-slate-500 leading-relaxed">
         貼上任意格式的活動公告，系統自動解析並填入欄位。<br />
-        例如：<span className="font-mono bg-gray-100 px-1 rounded text-gray-600">時間：12/17（三）14:00-15:30</span>
+        例如：<span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">時間：12/17（三）14:00-15:30</span>
       </p>
       <textarea rows={5}
-        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-800 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-300 font-mono"
+        className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm bg-slate-50/60 text-slate-800 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400 font-mono transition-colors"
         placeholder={"時間：12/17（三）14:00-15:30\n講題：石油期貨價格與情緒指數\n講者：銘傳大學金融學系 張雅婷 助理教授\n地點：商學院 301 教室"}
         value={text} onChange={e => { setText(e.target.value); setParsed(null); setApplied(false); }} />
       <button onClick={handleParse} disabled={!text.trim()}
-        className="self-start text-sm px-4 py-2 rounded-lg bg-violet-600 text-white hover:bg-violet-700 disabled:bg-gray-200 disabled:text-gray-400 transition-colors">
+        className="self-start text-sm px-4 py-2 rounded-md bg-slate-900 text-white hover:bg-slate-700 disabled:bg-slate-200 disabled:text-slate-400 transition-colors">
         ✦ 解析內容
       </button>
       {parsed && Object.keys(parsed).length > 0 && (
-        <div className="border border-violet-100 rounded-xl bg-violet-50 p-3 flex flex-col gap-2">
-          <p className="text-xs font-medium text-violet-600 mb-1">解析結果預覽</p>
+        <div className="border border-sky-100 rounded-md bg-sky-50 p-3 flex flex-col gap-2">
+          <p className="text-xs font-medium text-sky-700 mb-1">解析結果預覽</p>
           {Object.entries(parsed).map(([k, v]) => v ? (
             <div key={k} className="flex gap-2 text-xs">
-              <span className="text-gray-500 w-20 shrink-0">{FIELD_LABELS[k] || k}</span>
-              <span className="text-gray-800 font-medium">{v}</span>
+              <span className="text-slate-500 w-20 shrink-0">{FIELD_LABELS[k] || k}</span>
+              <span className="text-slate-800 font-medium">{v}</span>
             </div>
           ) : null)}
           <button onClick={handleApply}
-            className={`mt-1 self-start text-sm px-4 py-1.5 rounded-lg border transition-colors ${applied ? "border-green-400 text-green-600 bg-green-50" : "border-violet-400 text-violet-600 hover:bg-violet-100"}`}>
+            className={`mt-1 self-start text-sm px-4 py-1.5 rounded-md border transition-colors ${applied ? "border-emerald-300 text-emerald-700 bg-emerald-50" : "border-sky-300 text-sky-700 hover:bg-sky-100"}`}>
             {applied ? "✓ 已填入欄位" : "填入表單欄位"}
           </button>
         </div>
       )}
       {parsed && Object.keys(parsed).length === 0 && (
-        <p className="text-xs text-amber-500">未能解析出任何欄位，請確認格式（如「時間：」、「講者：」、「地點：」）</p>
+        <p className="text-xs text-amber-600">未能解析出任何欄位，請確認格式（如「時間：」、「講者：」、「地點：」）</p>
       )}
     </div>
   );
@@ -569,26 +569,26 @@ function FreeTextParser({ onApply }) {
 
 function Section({ title, children }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-      <h2 className="text-base font-semibold text-gray-700 mb-4">{title}</h2>
+    <section className="bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
+      <h2 className="text-sm font-semibold text-slate-800 mb-4 pb-3 border-b border-slate-100">{title}</h2>
       {children}
-    </div>
+    </section>
   );
 }
 
 function ResultCard({ label, content, onCopy, onRegen, copied }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-full">{label}</span>
+    <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm font-semibold text-sky-800 bg-sky-50 px-2.5 py-1 rounded-md">{label}</span>
         <div className="flex gap-2">
-          <button onClick={onRegen} className="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors">↺ 重新產生</button>
-          <button onClick={onCopy} className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${copied ? "border-green-400 text-green-600 bg-green-50" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}>
+          <button onClick={onRegen} className="text-xs px-3 py-1.5 rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">↺ 重新產生</button>
+          <button onClick={onCopy} className={`text-xs px-3 py-1.5 rounded-md border transition-colors ${copied ? "border-emerald-300 text-emerald-700 bg-emerald-50" : "border-sky-200 text-sky-700 hover:bg-sky-50"}`}>
             {copied ? "✓ 已複製" : "⧉ 複製"}
           </button>
         </div>
       </div>
-      <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans leading-relaxed bg-gray-50 rounded-xl p-4 max-h-80 overflow-y-auto">
+      <pre className="text-sm text-slate-700 whitespace-pre-wrap font-sans leading-relaxed bg-slate-50 rounded-md p-4 max-h-80 overflow-y-auto border border-slate-100">
         {content}
       </pre>
     </div>
@@ -710,22 +710,27 @@ export default function EventAssistant() {
   const infoOnly = length === "無";
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-3xl mx-auto flex flex-col gap-6">
+    <div className="min-h-screen bg-slate-100 px-4 py-6 sm:px-6">
+      <div className="mx-auto flex max-w-6xl flex-col gap-5">
 
         {/* Header */}
-        <div className="text-center py-4">
-          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">活動輔助整理</h1>
-          <p className="text-gray-400 mt-2 text-sm">輸入活動資訊，一次整理海報、公告、Email、報名頁與 AI 海報生成指令</p>
+        <div className="flex flex-col gap-3 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="mb-2 text-xs font-semibold text-sky-700">Event Assistant</p>
+            <h1 className="text-2xl font-bold text-slate-900">活動輔助整理</h1>
+            <p className="mt-2 text-sm text-slate-500">輸入活動資訊，一次整理海報、公告、Email、報名頁與 AI 海報生成指令</p>
+          </div>
+          <div className="flex gap-2 text-xs text-slate-500">
+            <span className="rounded-md border border-slate-200 bg-white px-2.5 py-1">文案產出</span>
+            <span className="rounded-md border border-slate-200 bg-white px-2.5 py-1">海報提示詞</span>
+          </div>
         </div>
 
-        {/* 快速解析 */}
-        <Section title="⚡ 快速貼上解析">
-          <FreeTextParser onApply={handleApplyParsed} />
-        </Section>
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+          <main className="flex flex-col gap-5">
 
         {/* Form */}
-        <Section title="📋 活動基本資料">
+        <Section title="活動基本資料">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InputField label="活動名稱 / 講題" id="name" value={form.name} onChange={setField("name")} placeholder="例：石油期貨價格與情緒指數" required />
             <InputField label="活動副標題" id="subtitle" value={form.subtitle} onChange={setField("subtitle")} placeholder="例：迎向 AI 新時代" />
@@ -744,27 +749,27 @@ export default function EventAssistant() {
 
             {/* 地點 + 教室勾選 */}
             <div className="sm:col-span-2 flex flex-col gap-1">
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">活動地點</label>
+              <label className="text-xs font-medium text-slate-500">活動地點</label>
               <div className="flex gap-2 items-center">
                 <input
                   type="text"
-                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white text-gray-800 placeholder-gray-400"
+                  className="flex-1 border border-slate-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400 bg-slate-50/60 focus:bg-white text-slate-800 placeholder-slate-400 transition-colors"
                   value={form.location}
                   onChange={e => setField("location")(e.target.value)}
                   placeholder={form.locationIsRoom ? "例：2515（自動補「教室」）" : "例：台灣大學霖澤館 101 室"}
                 />
-                <label className="flex items-center gap-1.5 text-sm text-gray-600 whitespace-nowrap cursor-pointer select-none">
+                <label className="flex items-center gap-1.5 text-sm text-slate-600 whitespace-nowrap cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={form.locationIsRoom}
                     onChange={e => setField("locationIsRoom")(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-500 focus:ring-blue-400"
+                    className="rounded border-slate-300 text-sky-600 focus:ring-sky-300"
                   />
                   教室
                 </label>
               </div>
               {form.location && (
-                <p className="text-xs text-blue-500">📍 顯示為：{locationDisplay}</p>
+                <p className="text-xs text-sky-600">顯示為：{locationDisplay}</p>
               )}
             </div>
 
@@ -772,7 +777,7 @@ export default function EventAssistant() {
 
             {/* 報名截止：日期 + 時間 */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">報名截止</label>
+              <label className="text-xs font-medium text-slate-500">報名截止</label>
               <DatePicker label="" value={form.deadlineDate} onChange={setField("deadlineDate")} />
               {form.deadlineDate && (
                 <div className="mt-1">
@@ -787,7 +792,7 @@ export default function EventAssistant() {
                 </div>
               )}
               {deadlineDisplay && (
-                <p className="text-xs text-blue-500">截止：{deadlineDisplay}</p>
+                <p className="text-xs text-sky-600">截止：{deadlineDisplay}</p>
               )}
             </div>
 
@@ -798,18 +803,18 @@ export default function EventAssistant() {
             {/* 活動目的 + 自動產生 */}
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">活動目的</label>
+                <label className="text-xs font-medium text-slate-500">活動目的</label>
                 <button
                   onClick={handleAutoGeneratePurpose}
                   disabled={generatingPurpose}
-                  className="text-xs px-3 py-1 rounded-lg border border-violet-200 text-violet-600 hover:bg-violet-50 disabled:opacity-50 transition-colors flex items-center gap-1"
+                  className="text-xs px-3 py-1 rounded-md border border-sky-200 text-sky-700 hover:bg-sky-50 disabled:opacity-50 transition-colors flex items-center gap-1"
                 >
                   {generatingPurpose ? "⏳ 產生中…" : "✦ 自動產生"}
                 </button>
               </div>
               <textarea
                 id="purpose" rows={3}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white text-gray-800 placeholder-gray-400 resize-none"
+                className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400 bg-slate-50/60 focus:bg-white text-slate-800 placeholder-slate-400 resize-none transition-colors"
                 value={form.purpose}
                 onChange={e => setField("purpose")(e.target.value)}
                 placeholder="說明本次活動的目標與意義…（或點右上「自動產生」）"
@@ -822,88 +827,43 @@ export default function EventAssistant() {
           </div>
         </Section>
 
-        {/* Options */}
-        <Section title="⚙️ 產出設定">
-          <div className="flex flex-col gap-5">
-            {/* 字數長度 先 */}
-            <div>
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">字數長度</p>
-              <div className="flex gap-2 flex-wrap">
-                {LENGTHS.map(l => (
-                  <button key={l} onClick={() => setLength(l)}
-                    className={`text-sm px-4 py-1.5 rounded-lg border transition-all ${length === l ? "bg-teal-600 text-white border-teal-600" : "bg-white text-gray-600 border-gray-200 hover:border-teal-300"}`}>
-                    {l === "無" ? "無（純資訊）" : l}
-                  </button>
-                ))}
-              </div>
-              {infoOnly && <p className="text-xs text-gray-400 mt-1.5">選「無」時只輸出活動資訊，不加入語氣潤飾或開場白。</p>}
-            </div>
-
-            {/* 文案語氣（選無時灰化） */}
-            <div className={infoOnly ? "opacity-40 pointer-events-none" : ""}>
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">文案語氣</p>
-              <div className="flex flex-wrap gap-2">
-                {TONES.map(t => (
-                  <button key={t} onClick={() => setTone(t)}
-                    className={`text-sm px-3 py-1.5 rounded-lg border transition-all ${tone === t ? "bg-violet-600 text-white border-violet-600" : "bg-white text-gray-600 border-gray-200 hover:border-violet-300"}`}>
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 素材類型 */}
-            <div>
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">選擇要產出的素材類型</p>
-              <div className="flex flex-wrap gap-2">
-                {MATERIAL_TYPES.map(t => (
-                  <button key={t.id} onClick={() => toggleType(t.id)}
-                    className={`text-sm px-3 py-1.5 rounded-lg border transition-all ${selectedTypes.includes(t.id) ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-200 hover:border-blue-300"}`}>
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Section>
-
         {/* Poster Settings */}
         {selectedTypes.includes("aiPrompt") && (
-          <Section title="🎨 AI 海報生成指令設定">
+          <Section title="AI 海報生成指令設定">
             <button onClick={() => setShowPosterSettings(v => !v)}
-              className="text-sm text-blue-600 underline underline-offset-2 mb-3">
-              {showPosterSettings ? "▲ 收起設定" : "▼ 展開設定"}
+              className="text-sm text-sky-700 underline underline-offset-2 mb-3">
+              {showPosterSettings ? "收起設定" : "展開設定"}
             </button>
             {showPosterSettings && (
               <div className="flex flex-col gap-5 mt-2">
                 <div>
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">海報尺寸</p>
+                  <p className="text-xs font-medium text-slate-500 mb-2">海報尺寸</p>
                   <div className="flex flex-wrap gap-2">
                     {POSTER_SIZES.map(s => (
                       <button key={s} onClick={() => setPosterSettings(p => ({ ...p, size: s }))}
-                        className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${posterSettings.size === s ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-200 hover:border-blue-300"}`}>
+                        className={`text-xs px-3 py-1.5 rounded-md border transition-all ${posterSettings.size === s ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200 hover:border-sky-300"}`}>
                         {s}
                       </button>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">海報風格 <span className="text-gray-400 font-normal normal-case">（單選）</span></p>
+                  <p className="text-xs font-medium text-slate-500 mb-2">海報風格 <span className="text-slate-400 font-normal">（單選）</span></p>
                   <div className="flex flex-wrap gap-2">
                     {POSTER_STYLES.map(s => (
                       <button key={s} onClick={() => setPosterSettings(p => ({ ...p, style: s }))}
-                        className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${posterSettings.style === s ? "bg-violet-600 text-white border-violet-600" : "bg-white text-gray-600 border-gray-200 hover:border-violet-300"}`}>
+                        className={`text-xs px-3 py-1.5 rounded-md border transition-all ${posterSettings.style === s ? "bg-sky-700 text-white border-sky-700" : "bg-white text-slate-600 border-slate-200 hover:border-sky-300"}`}>
                         {s}
                       </button>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                    色系 <span className="text-gray-400 font-normal normal-case">（可複選）</span>
+                  <p className="text-xs font-medium text-slate-500 mb-2">
+                    色系 <span className="text-slate-400 font-normal">（可複選）</span>
                     {posterSettings.colorSchemes.length > 0 && !posterSettings.colorSchemes.includes("unspecified") && (
                       <button onClick={() => setPosterSettings(p => ({ ...p, colorSchemes: ["unspecified"] }))}
-                        className="ml-2 text-amber-500 hover:text-amber-700 text-xs">清除</button>
+                        className="ml-2 text-amber-600 hover:text-amber-700 text-xs">清除</button>
                     )}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -923,27 +883,26 @@ export default function EventAssistant() {
                               });
                             }
                           }}
-                          className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${active ? "bg-amber-500 text-white border-amber-500" : "bg-white text-gray-600 border-gray-200 hover:border-amber-300"}`}>
+                          className={`text-xs px-3 py-1.5 rounded-md border transition-all ${active ? "bg-amber-500 text-white border-amber-500" : "bg-white text-slate-600 border-slate-200 hover:border-amber-300"}`}>
                           {c.label}
                         </button>
                       );
                     })}
                   </div>
                 </div>
-                {/* 顯示欄位 + 同步按鈕 */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">顯示於海報的欄位</p>
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <p className="text-xs font-medium text-slate-500">顯示於海報的欄位</p>
                     <button onClick={syncPosterFields}
-                      className="text-xs px-3 py-1 rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors">
-                      ↺ 依已填欄位自動勾選
+                      className="text-xs px-3 py-1 rounded-md border border-sky-200 text-sky-700 hover:bg-sky-50 transition-colors">
+                      依已填欄位勾選
                     </button>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {POSTER_FIELDS.map(f => (
-                      <label key={f.id} className="flex items-center gap-2 cursor-pointer text-sm text-gray-600">
+                      <label key={f.id} className="flex items-center gap-2 cursor-pointer text-sm text-slate-600">
                         <input type="checkbox" checked={posterSettings.fields[f.id]} onChange={() => togglePosterField(f.id)}
-                          className="rounded border-gray-300 text-blue-500 focus:ring-blue-400" />
+                          className="rounded border-slate-300 text-sky-600 focus:ring-sky-300" />
                         {f.label}
                       </label>
                     ))}
@@ -954,22 +913,77 @@ export default function EventAssistant() {
           </Section>
         )}
 
+          </main>
+
+          <aside className="flex flex-col gap-5 lg:sticky lg:top-6">
+            {/* 快速解析 */}
+            <Section title="快速貼上解析">
+              <FreeTextParser onApply={handleApplyParsed} />
+            </Section>
+
+        {/* Options */}
+        <Section title="產出設定">
+          <div className="flex flex-col gap-5">
+            {/* 字數長度 先 */}
+            <div>
+              <p className="text-xs font-medium text-slate-500 mb-2">字數長度</p>
+              <div className="flex gap-2 flex-wrap">
+                {LENGTHS.map(l => (
+                  <button key={l} onClick={() => setLength(l)}
+                    className={`text-sm px-3 py-1.5 rounded-md border transition-all ${length === l ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200 hover:border-sky-300"}`}>
+                    {l === "無" ? "無（純資訊）" : l}
+                  </button>
+                ))}
+              </div>
+              {infoOnly && <p className="text-xs text-slate-400 mt-1.5">選「無」時只輸出活動資訊，不加入語氣潤飾或開場白。</p>}
+            </div>
+
+            {/* 文案語氣（選無時灰化） */}
+            <div className={infoOnly ? "opacity-40 pointer-events-none" : ""}>
+              <p className="text-xs font-medium text-slate-500 mb-2">文案語氣</p>
+              <div className="flex flex-wrap gap-2">
+                {TONES.map(t => (
+                  <button key={t} onClick={() => setTone(t)}
+                    className={`text-sm px-3 py-1.5 rounded-md border transition-all ${tone === t ? "bg-sky-700 text-white border-sky-700" : "bg-white text-slate-600 border-slate-200 hover:border-sky-300"}`}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 素材類型 */}
+            <div>
+              <p className="text-xs font-medium text-slate-500 mb-2">選擇要產出的素材類型</p>
+              <div className="flex flex-wrap gap-2">
+                {MATERIAL_TYPES.map(t => (
+                  <button key={t.id} onClick={() => toggleType(t.id)}
+                    className={`text-sm px-3 py-1.5 rounded-md border transition-all ${selectedTypes.includes(t.id) ? "bg-sky-700 text-white border-sky-700" : "bg-white text-slate-600 border-slate-200 hover:border-sky-300"}`}>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Section>
+
         {/* Action Buttons */}
         <div className="flex gap-3">
           <button onClick={handleGenerate} disabled={selectedTypes.length === 0}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 rounded-xl transition-colors text-sm shadow-sm">
-            ✦ 產生活動素材
+            className="flex-1 bg-slate-900 hover:bg-slate-700 disabled:bg-slate-300 text-white font-semibold py-3 rounded-md transition-colors text-sm shadow-sm">
+            產生活動素材
           </button>
           <button onClick={handleClear}
-            className="px-6 py-3 border border-gray-200 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors text-sm">
+            className="px-5 py-3 border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 rounded-md transition-colors text-sm">
             清除內容
           </button>
+        </div>
+          </aside>
         </div>
 
         {/* Results */}
         {generated && Object.keys(results).length > 0 && (
           <div id="results-section" className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold text-gray-700 mt-2">📄 產出結果</h2>
+            <h2 className="text-lg font-semibold text-slate-800 mt-2">產出結果</h2>
             {MATERIAL_TYPES.filter(t => results[t.id] !== undefined).map(t => (
               <ResultCard key={t.id} label={t.label} content={results[t.id]}
                 onCopy={() => handleCopy(t.id)} onRegen={() => handleRegen(t.id)} copied={!!copied[t.id]} />
@@ -977,7 +991,7 @@ export default function EventAssistant() {
           </div>
         )}
 
-        <footer className="text-center text-xs text-gray-300 pb-4">
+        <footer className="text-center text-xs text-slate-400 pb-4">
           活動輔助整理 — 讓每場活動的文案工作更輕鬆
         </footer>
       </div>
